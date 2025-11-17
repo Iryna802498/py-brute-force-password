@@ -18,6 +18,9 @@ PASSWORDS_TO_BRUTE_FORCE = [
 ]
 
 
+PASSWORDS_TO_BRUTE_FORCE_SET = set(PASSWORDS_TO_BRUTE_FORCE)
+
+
 def sha256_hash_str(to_hash: str) -> str:
     return sha256(to_hash.encode("utf-8")).hexdigest()
 
@@ -26,13 +29,13 @@ def check_password(start: int, end: int) -> None:
     for password in range(start, end):
         password_str = str(password).zfill(8)
         hashed_password = sha256_hash_str(password_str)
-        if hashed_password in PASSWORDS_TO_BRUTE_FORCE:
+        if hashed_password in PASSWORDS_TO_BRUTE_FORCE_SET:
             print(password_str)
 
 
 def brute_force_password() -> None:
     total = 100_000_000
-    cpu_count = multiprocessing.cpu_count() - 1
+    cpu_count = max(1, multiprocessing.cpu_count() - 1)
     chunk = total // cpu_count
 
     futures = []
